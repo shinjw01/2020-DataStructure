@@ -27,7 +27,7 @@ void main() {
 		if (s[i].first == 10) {
 			sum += s[i].first + s[i + 1].first + s[i + 1].second;
 			f[i].result = STRIKE;
-			if (i < 9 && s[i + 1].first == 10) //10ÇÁ·¹ÀÓ ÀÌ¿Ü¿¡ ´õºí ½ºÆ®¶óÀÌÅ©¸¦ Ä£ °æ¿ì
+			if (i < 9 && s[i + 1].first == 10) //10í”„ë ˆìž„ ì´ì™¸ì— ë”ë¸” ìŠ¤íŠ¸ë¼ì´í¬ë¥¼ ì¹œ ê²½ìš°
 				sum += s[i + 2].first;
 		}
 		else if ((s[i].first + s[i].second) == 10) //spare
