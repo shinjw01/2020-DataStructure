@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h> // strtok(¹®ÀÚ¿­,ºĞ¸®ÀÚ)ÇÊ¿äÇÒ°Í°°¾Æ¼­ ¸¸¾à »ç¿ë¾ÈÇÏ¸é Áö¿ì±â
+#include <string.h> // strtok(ë¬¸ìì—´,ë¶„ë¦¬ì)í•„ìš”í• ê²ƒê°™ì•„ì„œ ë§Œì•½ ì‚¬ìš©ì•ˆí•˜ë©´ ì§€ìš°ê¸°
 #pragma warning(disable:4996)
 #define DO 1
 #define GAE 2
@@ -12,10 +12,10 @@
 
 typedef struct horses* horse_ptr;
 struct horses {
-	int finish;					//¿ÏÁÖÇß´Â°¡
-	int visitcorner3;			//corner_node3¸¦ ¹æ¹®Çß´Â°¡?
-	horse_ptr carried;			//¾÷Çû´Â°¡
-	void* location;				//ÇöÀç À§Ä¡°¡ ¾îµğÀÎ°¡? °¥¸²±æ ÁøÇà ¹æÇâ Á¤ÇÏ´Â ¿ªÇÒ+¸»ÀâÀ½, ¸»¾÷À½ È®ÀÎ
+	int finish;					//ì™„ì£¼í–ˆëŠ”ê°€
+	int visitcorner3;			//corner_node3ë¥¼ ë°©ë¬¸í–ˆëŠ”ê°€?
+	horse_ptr carried;			//ì—…í˜”ëŠ”ê°€
+	void* location;				//í˜„ì¬ ìœ„ì¹˜ê°€ ì–´ë””ì¸ê°€? ê°ˆë¦¼ê¸¸ ì§„í–‰ ë°©í–¥ ì •í•˜ëŠ” ì—­í• +ë§ì¡ìŒ, ë§ì—…ìŒ í™•ì¸
 	char s[4];
 }A, B, C, X, Y, Z;
 
@@ -51,22 +51,22 @@ struct special_node {
 	char s[4];
 }middle_node;
 
-int throwing_record[10] = { 0 };			//´øÁ®¼­ ³ª¿Â ´«ÀÇ ±â·Ï
-int moving_order[10] = { 0 };				//´« ¼ø¼­. ´« ¼ø¼­´ë·Î ¸»À» ¿òÁ÷ÀÌ°í ´«ÀÇ ±â·Ï¿¡¼­ (´«ÀÇ ¼ø¼­¿¡¼­ Áö¿öÁø ´«°ú) °°Àº ´«À» Áö¿î´Ù.
-int backdo_exist = 0;						//Ã¹ÆÇ¿¡¼­ ¹éµµ ³ª¿À¸é ¹«½ÃÇÏµµ·Ï ÇÏ±â À§ÇØ ¸¸µç º¯¼ö
-int arrest = 0;								//throwÇÔ¼ö¿¡¼­ ¸»ÀâÈûÀ¸·Î ºÒ·Á¿Ô´ÂÁö È®ÀÎÇÏµµ·Ï ÇÏ±â À§ÇØ ¸¸µç º¯¼ö
+int throwing_record[10] = { 0 };			//ë˜ì ¸ì„œ ë‚˜ì˜¨ ëˆˆì˜ ê¸°ë¡
+int moving_order[10] = { 0 };				//ëˆˆ ìˆœì„œ. ëˆˆ ìˆœì„œëŒ€ë¡œ ë§ì„ ì›€ì§ì´ê³  ëˆˆì˜ ê¸°ë¡ì—ì„œ (ëˆˆì˜ ìˆœì„œì—ì„œ ì§€ì›Œì§„ ëˆˆê³¼) ê°™ì€ ëˆˆì„ ì§€ìš´ë‹¤.
+int backdo_exist = 0;						//ì²«íŒì—ì„œ ë°±ë„ ë‚˜ì˜¤ë©´ ë¬´ì‹œí•˜ë„ë¡ í•˜ê¸° ìœ„í•´ ë§Œë“  ë³€ìˆ˜
+int arrest = 0;								//throwí•¨ìˆ˜ì—ì„œ ë§ì¡í˜ìœ¼ë¡œ ë¶ˆë ¤ì™”ëŠ”ì§€ í™•ì¸í•˜ë„ë¡ í•˜ê¸° ìœ„í•´ ë§Œë“  ë³€ìˆ˜
 int player_order = 1;
 int first_backdo = 0;
 
-common_ptr connect_node(void* ptr);								//¼­·Î´Ù¸¥Å¸ÀÔÀÇ ³ëµå³¢¸® ¿¬°áÇÒ ÇÔ¼ö
-common_ptr insert_node(common_ptr ptr1, int num);				//common³ëµå Âß ÀÌ¾îºÙÀÏ ÇÔ¼ö
-void throw();									//À·´øÁö´Â ÇÔ¼ö
-char choose_horse();							//¿òÁ÷ÀÏ ¸» ¼±ÅÃ
-void input_order(horse_ptr ptr);												//´« ¼ø¼­ ÀÔ·Â, ³²Àº ´« ÀÖÀ¸¸é ¸»¼±ÅÃÇÔ¼ö·Î µ¹¾Æ°¡µµ·Ï ÄÚµù.
-void move_horse(horse_ptr ptr);					//´« ¼ø¼­´ë·Î ¿òÁ÷ÀÌ±â
-void catch_enemy(horse_ptr ptr);				//¸»ÀâÀ½
+common_ptr connect_node(void* ptr);								//ì„œë¡œë‹¤ë¥¸íƒ€ì…ì˜ ë…¸ë“œë¼ë¦¬ ì—°ê²°í•  í•¨ìˆ˜
+common_ptr insert_node(common_ptr ptr1, int num);				//commonë…¸ë“œ ì­‰ ì´ì–´ë¶™ì¼ í•¨ìˆ˜
+void throw();									//ìœ·ë˜ì§€ëŠ” í•¨ìˆ˜
+char choose_horse();							//ì›€ì§ì¼ ë§ ì„ íƒ
+void input_order(horse_ptr ptr);												//ëˆˆ ìˆœì„œ ì…ë ¥, ë‚¨ì€ ëˆˆ ìˆìœ¼ë©´ ë§ì„ íƒí•¨ìˆ˜ë¡œ ëŒì•„ê°€ë„ë¡ ì½”ë”©.
+void move_horse(horse_ptr ptr);					//ëˆˆ ìˆœì„œëŒ€ë¡œ ì›€ì§ì´ê¸°
+void catch_enemy(horse_ptr ptr);				//ë§ì¡ìŒ
 void initialize(horse_ptr ptr);
-void carry_ally(horse_ptr ptr);						//¸»¾÷À½
+void carry_ally(horse_ptr ptr);						//ë§ì—…ìŒ
 void synchronize(ptr);
 int Is_record_empty();
 void print_board();
@@ -75,11 +75,11 @@ void main() {
 	int i;
 	horse_ptr ptr = NULL;
 	common_ptr ptr1, ptr2;
-	corner_node3.rlink1 = NULL;		//connect_node ÇÔ¼ö¿¡ ¾²±â À§ÇØ NULL·Î ÃÊ±âÈ­
+	corner_node3.rlink1 = NULL;		//connect_node í•¨ìˆ˜ì— ì“°ê¸° ìœ„í•´ NULLë¡œ ì´ˆê¸°í™”
 	middle_node.ldownlink = NULL;
 	char answer, horse;
 
-	//À·³îÀÌ ÆÇ ³ëµå »ı¼º ¹× ¿¬°á
+	//ìœ·ë†€ì´ íŒ ë…¸ë“œ ìƒì„± ë° ì—°ê²°
 	ptr1 = connect_node(&corner_node1);
 	ptr1 = insert_node(ptr1, 3);
 	ptr1->rlink = &corner_node2;
@@ -120,21 +120,21 @@ void main() {
 	ptr1->rlink = &corner_node1;
 	corner_node1.llink2 = ptr1;
 
-	printf("<À·³îÀÌ>±ÔÄ¢ ¼³¸í.\n");
-	printf("**±ÔÄ¢1: ÇÃ·¹ÀÌ¾î1ÀÇ ¸»Àº A,B,C,ÇÃ·¹ÀÌ¾î 2ÀÇ ¸»Àº X,Y,ZÀÔ´Ï´Ù. ¸ğµç ¸»À» ¸ÕÀú °ñÀÎ½ÃÅ°¸é ½Â¸®ÀÔ´Ï´Ù.\n");
-	printf("**±ÔÄ¢2: µµ´Â 1Ä­, °³´Â 2Ä­, °ÉÀº 3Ä­, À·Àº 4Ä­, ¸ğ´Â 5Ä­, ¹éµµ´Â -1Ä­ÀÔ´Ï´Ù.\nÀ·ÀÌ³ª ¸ğ°¡ ³ª¿À¸é ÇÑ ¹ø ´õ ´øÁı´Ï´Ù. »ó´ë¸»À» Àâ¾Æµµ ÇÑ ¹ø ´õ ´øÁı´Ï´Ù.\n");
-	printf("**±ÔÄ¢3: ¹éµµ´Â ¿ÀÁ÷ ÆÇ¿¡ ÀÖ´Â ¸»¿¡¸¸ Àû¿ë½ÃÅ³ ¼ö ÀÖ½À´Ï´Ù. ¸¸¾à ¸ğµç ¸»ÀÌ ÆÇ À§¿¡ ÀÖÁö ¾Ê´Ù¸é ÅÏÀÌ ³Ñ¾î°©´Ï´Ù.\n");
-	printf("**±ÔÄ¢4: ¹éµµ·Î È¨¿¡ µé¾î¿Íµµ °ñÀÎÀÔ´Ï´Ù.(ex: µµ·Î ÇÑ Ä­ °¬´Ù°¡ ¹éµµ ³ª¿Í¼­ È¨À¸·Î µ¹¾Æ¿È)\n¶ÇÇÑ, °¥¸²±æ¿¡¼­ ¹éµµ°¡ ³ª¿Ã °æ¿ì ±âÁ¸¿¡ ¿Â ¹æÇâÀ¸·Î µÚ·Î °©´Ï´Ù.\n");
-	printf("**±ÔÄ¢5: °°Àº Æí ¸»À» ¾÷À» ¼ö ÀÖ½À´Ï´Ù.\n\n");
+	printf("<ìœ·ë†€ì´>ê·œì¹™ ì„¤ëª….\n");
+	printf("**ê·œì¹™1: í”Œë ˆì´ì–´1ì˜ ë§ì€ A,B,C,í”Œë ˆì´ì–´ 2ì˜ ë§ì€ X,Y,Zì…ë‹ˆë‹¤. ëª¨ë“  ë§ì„ ë¨¼ì € ê³¨ì¸ì‹œí‚¤ë©´ ìŠ¹ë¦¬ì…ë‹ˆë‹¤.\n");
+	printf("**ê·œì¹™2: ë„ëŠ” 1ì¹¸, ê°œëŠ” 2ì¹¸, ê±¸ì€ 3ì¹¸, ìœ·ì€ 4ì¹¸, ëª¨ëŠ” 5ì¹¸, ë°±ë„ëŠ” -1ì¹¸ì…ë‹ˆë‹¤.\nìœ·ì´ë‚˜ ëª¨ê°€ ë‚˜ì˜¤ë©´ í•œ ë²ˆ ë” ë˜ì§‘ë‹ˆë‹¤. ìƒëŒ€ë§ì„ ì¡ì•„ë„ í•œ ë²ˆ ë” ë˜ì§‘ë‹ˆë‹¤.\n");
+	printf("**ê·œì¹™3: ë°±ë„ëŠ” ì˜¤ì§ íŒì— ìˆëŠ” ë§ì—ë§Œ ì ìš©ì‹œí‚¬ ìˆ˜ ìˆìŠµë‹ˆë‹¤. ë§Œì•½ ëª¨ë“  ë§ì´ íŒ ìœ„ì— ìˆì§€ ì•Šë‹¤ë©´ í„´ì´ ë„˜ì–´ê°‘ë‹ˆë‹¤.\n");
+	printf("**ê·œì¹™4: ë°±ë„ë¡œ í™ˆì— ë“¤ì–´ì™€ë„ ê³¨ì¸ì…ë‹ˆë‹¤.(ex: ë„ë¡œ í•œ ì¹¸ ê°”ë‹¤ê°€ ë°±ë„ ë‚˜ì™€ì„œ í™ˆìœ¼ë¡œ ëŒì•„ì˜´)\në˜í•œ, ê°ˆë¦¼ê¸¸ì—ì„œ ë°±ë„ê°€ ë‚˜ì˜¬ ê²½ìš° ê¸°ì¡´ì— ì˜¨ ë°©í–¥ìœ¼ë¡œ ë’¤ë¡œ ê°‘ë‹ˆë‹¤.\n");
+	printf("**ê·œì¹™5: ê°™ì€ í¸ ë§ì„ ì—…ì„ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n\n");
 	print_board();
 	while (1) {
-		printf("À·³îÀÌ »õ °ÔÀÓÀ» ½ÃÀÛÇÏ½Ã·Á¸é y¸¦ ´­·¯ÁÖ¼¼¿ä.");
+		printf("ìœ·ë†€ì´ ìƒˆ ê²Œì„ì„ ì‹œì‘í•˜ì‹œë ¤ë©´ yë¥¼ ëˆŒëŸ¬ì£¼ì„¸ìš”.");
 		scanf("%c", &answer);
 		if (answer != 'y')
 			break;
 
 		printf("\n");
-		printf("¼± ÇÃ·¹ÀÌ¾î¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä(1 ¶Ç´Â 2 ÀÔ·Â):");
+		printf("ì„  í”Œë ˆì´ì–´ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”(1 ë˜ëŠ” 2 ì…ë ¥):");
 		scanf("%d", &player_order);
 		printf("\n------------------------------------------------------------------------\n");
 		A.finish = 0, A.carried = 0, A.visitcorner3 = 0, A.carried = NULL, A.location = &corner_node1, strcpy(A.s, " A ");
@@ -143,9 +143,9 @@ void main() {
 		X.finish = 0, X.carried = 0, X.visitcorner3 = 0, X.carried = NULL, X.location = &corner_node1, strcpy(X.s, " X ");
 		Y.finish = 0, Y.carried = 0, Y.visitcorner3 = 0, Y.carried = NULL, Y.location = &corner_node1, strcpy(Y.s, " Y ");
 		Z.finish = 0, Z.carried = 0, Z.visitcorner3 = 0, Z.carried = NULL, Z.location = &corner_node1, strcpy(Z.s, " Z ");
-		getchar();// y ÀÔ·Â ¹ŞÀ» ¶§ ¹öÆÛ¿¡ °°ÀÌ µé¾î¿Â \n°ª ¹Ş¾Æ¼­ ¾ø¾ÖÁÖ´Â Áß
+		getchar();// y ì…ë ¥ ë°›ì„ ë•Œ ë²„í¼ì— ê°™ì´ ë“¤ì–´ì˜¨ \nê°’ ë°›ì•„ì„œ ì—†ì• ì£¼ëŠ” ì¤‘
 		while (!((A.finish == 1 && B.finish == 1 && C.finish == 1) || (X.finish == 1 && Y.finish == 1 && Z.finish == 1))) {
-			printf("\nÇÃ·¹ÀÌ¾î %dÀÇ Â÷·ÊÀÔ´Ï´Ù. À·À» ´øÁö½Ã·Á¸é Enter¸¦ ´­·¯ÁÖ¼¼¿ä.", player_order);
+			printf("\ní”Œë ˆì´ì–´ %dì˜ ì°¨ë¡€ì…ë‹ˆë‹¤. ìœ·ì„ ë˜ì§€ì‹œë ¤ë©´ Enterë¥¼ ëˆŒëŸ¬ì£¼ì„¸ìš”.", player_order);
 			printf("\n");
 			throw();
 			while (!Is_record_empty()) {
@@ -180,7 +180,7 @@ void main() {
 				else
 					first_backdo--;
 				if (ptr->finish == 1)
-					printf("%c°¡ °ñÀÎÇß½À´Ï´Ù.\n\n", horse);
+					printf("%cê°€ ê³¨ì¸í–ˆìŠµë‹ˆë‹¤.\n\n", horse);
 			}
 			if (player_order == 1)
 				player_order = 2;
@@ -188,29 +188,29 @@ void main() {
 				player_order = 1;
 		}
 		if (A.finish == 1 && B.finish == 1 && C.finish == 1)
-			printf("ÇÃ·¹ÀÌ¾î 1ÀÇ ½Â¸®ÀÔ´Ï´Ù! ÃàÇÏÇÕ´Ï´Ù!");
+			printf("í”Œë ˆì´ì–´ 1ì˜ ìŠ¹ë¦¬ì…ë‹ˆë‹¤! ì¶•í•˜í•©ë‹ˆë‹¤!");
 		else
-			printf("ÇÃ·¹ÀÌ¾î 2ÀÇ ½Â¸®ÀÔ´Ï´Ù! ÃàÇÏÇÕ´Ï´Ù!");
+			printf("í”Œë ˆì´ì–´ 2ì˜ ìŠ¹ë¦¬ì…ë‹ˆë‹¤! ì¶•í•˜í•©ë‹ˆë‹¤!");
 	}
 	system("pause");
 }
 
-common_ptr connect_node(void* ptr) {		//ÁøÇà¹æÇâÀ¸·Î common³ëµå ÀÌ¾îºÙ¿©¼­ ¸¸µé±â.
+common_ptr connect_node(void* ptr) {		//ì§„í–‰ë°©í–¥ìœ¼ë¡œ commonë…¸ë“œ ì´ì–´ë¶™ì—¬ì„œ ë§Œë“¤ê¸°.
 	common_ptr ptr1;
 	ptr1 = (common_ptr)malloc(sizeof(struct common_node));
 	ptr1->llink = ptr;
 	strcpy(ptr1->s, " O ");
-	if ((corner1_ptr)ptr == &corner_node1 || (corner1_ptr)ptr == &corner_node4) {							//corner_type1ÀÎ°æ¿ì
+	if ((corner1_ptr)ptr == &corner_node1 || (corner1_ptr)ptr == &corner_node4) {							//corner_type1ì¸ê²½ìš°
 		strcpy(((corner1_ptr)ptr)->s, " O ");
 		((corner1_ptr)ptr)->rlink = ptr1;
 	}
-	else if (corner_node3.rlink1 == NULL && ((corner2_ptr)ptr == &corner_node2 || (corner2_ptr)ptr == &corner_node3))//corner_type2ÀÎµ¥ rlink1 Ã¤¿ï °æ¿ì
+	else if (corner_node3.rlink1 == NULL && ((corner2_ptr)ptr == &corner_node2 || (corner2_ptr)ptr == &corner_node3))//corner_type2ì¸ë° rlink1 ì±„ìš¸ ê²½ìš°
 		((corner2_ptr)ptr)->rlink1 = ptr1;
-	else if ((corner2_ptr)ptr == &corner_node2 || (corner2_ptr)ptr == &corner_node3) {					//corner_type2ÀÎµ¥ rlink2 Ã¤¿ï °æ¿ì
+	else if ((corner2_ptr)ptr == &corner_node2 || (corner2_ptr)ptr == &corner_node3) {					//corner_type2ì¸ë° rlink2 ì±„ìš¸ ê²½ìš°
 		strcpy(((corner2_ptr)ptr)->s, " O ");
 		((corner2_ptr)ptr)->rlink2 = ptr1;
 	}
-	else if ((special_ptr)ptr == &middle_node) {														//special_nodeÀÎ°æ¿ì
+	else if ((special_ptr)ptr == &middle_node) {														//special_nodeì¸ê²½ìš°
 		if (!middle_node.ldownlink) {
 			strcpy(middle_node.s, " O ");
 			middle_node.ldownlink = ptr1;
@@ -221,7 +221,7 @@ common_ptr connect_node(void* ptr) {		//ÁøÇà¹æÇâÀ¸·Î common³ëµå ÀÌ¾îºÙ¿©¼­ ¸¸µé±
 	return ptr1;
 };
 
-common_ptr insert_node(common_ptr ptr1, int num) {					//´Ù¸¥Á¾·ùÀÇ ³ëµå ´ÙÀ½¿¡ ÀÌ¾îÁø ¼±µÎ common_node¿¡ ÀÌ¾îÁú ³ëµå Âß ¼±¾ğ
+common_ptr insert_node(common_ptr ptr1, int num) {					//ë‹¤ë¥¸ì¢…ë¥˜ì˜ ë…¸ë“œ ë‹¤ìŒì— ì´ì–´ì§„ ì„ ë‘ common_nodeì— ì´ì–´ì§ˆ ë…¸ë“œ ì­‰ ì„ ì–¸
 	int i;
 	common_ptr ptr2 = ptr1;
 	for (i = 1; i <= num; i++) {
@@ -239,20 +239,20 @@ void throw(){
 	char str1[10],str2[20];
 
 	if (arrest) {
-		printf("\n»ó´ëÆí ¸»À» Àâ¾Ò½À´Ï´Ù. ÇÑ ¹ø ´õ ±¼¸®°í, ¿òÁ÷ÀÏ ¸»°ú ¸»À» ¿òÁ÷ÀÏ ¼ø¼­¸¦ ´Ù½Ã Á¤ÇÕ´Ï´Ù.\n");
+		printf("\nìƒëŒ€í¸ ë§ì„ ì¡ì•˜ìŠµë‹ˆë‹¤. í•œ ë²ˆ ë” êµ´ë¦¬ê³ , ì›€ì§ì¼ ë§ê³¼ ë§ì„ ì›€ì§ì¼ ìˆœì„œë¥¼ ë‹¤ì‹œ ì •í•©ë‹ˆë‹¤.\n");
 		for (k = 0; k <= 9; k++)
 			moving_order[k] = 0;
 	}
 
 	do {
 		strcpy(str2, "");
-		getchar();//À·³îÀÌ Å¸°İ°¨ »ì¸®·Á°í
+		getchar();//ìœ·ë†€ì´ íƒ€ê²©ê° ì‚´ë¦¬ë ¤ê³ 
 		srand((unsigned)time(NULL));
 		j = rand() % 6 + 1;
 		if (j == 6)
 			j = -1;
 
-		if (arrest)												//¸»Àâ¾ÒÀ»¶§ throwing_record ¹è¿­ ºóÄ­¿¡ »õ·Î ´øÁø°Å Ã¤¿ö³Ö±â
+		if (arrest)												//ë§ì¡ì•˜ì„ë•Œ throwing_record ë°°ì—´ ë¹ˆì¹¸ì— ìƒˆë¡œ ë˜ì§„ê±° ì±„ì›Œë„£ê¸°
 			for (k = 0; k <= 9; k++) {
 				if (throwing_record[k] == 0) {
 					throwing_record[k] = j;
@@ -265,28 +265,28 @@ void throw(){
 
 		switch (j) {
 		case BACKDO:
-			strcpy(str1, "¹éµµ°¡");
+			strcpy(str1, "ë°±ë„ê°€");
 			break;
 		case DO:
-			strcpy(str1, "µµ°¡");
+			strcpy(str1, "ë„ê°€");
 			break;
 		case GAE:
-			strcpy(str1, "°³°¡");
+			strcpy(str1, "ê°œê°€");
 			break;
 		case GUL:
-			strcpy(str1, "°ÉÀÌ");
+			strcpy(str1, "ê±¸ì´");
 			break;
 		case YUT:
-			strcpy(str1, "À·ÀÌ");
-			strcpy(str2,"ÇÑ ¹ø ´õ ±¼¸³´Ï´Ù.");
+			strcpy(str1, "ìœ·ì´");
+			strcpy(str2,"í•œ ë²ˆ ë” êµ´ë¦½ë‹ˆë‹¤.");
 			break;
 		case MO:
-			strcpy(str1, "¸ğ°¡");
-			strcpy(str2, "ÇÑ ¹ø ´õ ±¼¸³´Ï´Ù.");
+			strcpy(str1, "ëª¨ê°€");
+			strcpy(str2, "í•œ ë²ˆ ë” êµ´ë¦½ë‹ˆë‹¤.");
 			break;
 		}
-		printf("%s ³ª¿Ô½À´Ï´Ù.%s", str1, str2);
-		if (player_order == 1 && (A.location == &corner_node1 || B.location == &corner_node1 || C.location == &corner_node1) && throwing_record[i] == -1)//¸ğµç¸»ÀÌÆÇ¿¡¼­Ãâ¹ß¾ÈÇßÀ»¶§À·(¸ğ),¹éµµ³ª¿À¸éÀ·¸ÕÀú¾²°í¹éµµ¾²°ÔÇÏ±âÀ§ÇØ¼­
+		printf("%s ë‚˜ì™”ìŠµë‹ˆë‹¤.%s", str1, str2);
+		if (player_order == 1 && (A.location == &corner_node1 || B.location == &corner_node1 || C.location == &corner_node1) && throwing_record[i] == -1)//ëª¨ë“ ë§ì´íŒì—ì„œì¶œë°œì•ˆí–ˆì„ë•Œìœ·(ëª¨),ë°±ë„ë‚˜ì˜¤ë©´ìœ·ë¨¼ì €ì“°ê³ ë°±ë„ì“°ê²Œí•˜ê¸°ìœ„í•´ì„œ
 			backdo_exist = 1;
 		if (player_order == 2 && (X.location == &corner_node1 || Y.location == &corner_node1 || Z.location == &corner_node1) && throwing_record[i] == -1)
 			backdo_exist = 1;
@@ -294,31 +294,31 @@ void throw(){
 	} while ((arrest == 0 && (throwing_record[i - 1] == YUT || throwing_record[i - 1] == MO)) || (arrest == 1 && (throwing_record[k] == YUT || throwing_record[k] == MO)));
 
 	if (arrest) {
-		printf("ÇöÀç º¸À¯ÇÑ ´«Àº ");
+		printf("í˜„ì¬ ë³´ìœ í•œ ëˆˆì€ ");
 		for (i = 0; i < 10; i++) {
 			switch (throwing_record[i])
 			{
 			case DO:
-				printf("µµ ");
+				printf("ë„ ");
 				break;
 			case GAE:
-				printf("°³ ");
+				printf("ê°œ ");
 				break;
 			case GUL:
-				printf("°É ");
+				printf("ê±¸ ");
 				break;
 			case YUT:
-				printf("À· ");
+				printf("ìœ· ");
 				break;
 			case MO:
-				printf("¸ğ ");
+				printf("ëª¨ ");
 				break;
 			case BACKDO:
-				printf("¹éµµ ");
+				printf("ë°±ë„ ");
 				break;
 }
 }
-printf("ÀÔ´Ï´Ù.\n");
+printf("ì…ë‹ˆë‹¤.\n");
 }
 
 };
@@ -327,18 +327,18 @@ char choose_horse() {
 	char horse;
 	while (1) {
 		if (player_order == 1) {
-			printf("\n¿òÁ÷ÀÌ°í ½ÍÀº ¸»À» ¼±ÅÃÇÏ¼¼¿ä(A,B,C)");
+			printf("\nì›€ì§ì´ê³  ì‹¶ì€ ë§ì„ ì„ íƒí•˜ì„¸ìš”(A,B,C)");
 			scanf("%c", &horse);
 			if (!(horse == 'A' || horse == 'B' || horse == 'C')) {
-				printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. »ó°ü¾ø´Â ¹®ÀÚ¸¦ ÀÔ·ÂÇÏ¼Ì°Å³ª ¼Ò¹®ÀÚ¸¦ ÀÔ·ÂÇÏ¼Ì½À´Ï´Ù. ´ë¹®ÀÚ·Î ¸»À» ÀÔ·ÂÇØÁÖ¼¼¿ä.\n\n");
+				printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìƒê´€ì—†ëŠ” ë¬¸ìë¥¼ ì…ë ¥í•˜ì…¨ê±°ë‚˜ ì†Œë¬¸ìë¥¼ ì…ë ¥í•˜ì…¨ìŠµë‹ˆë‹¤. ëŒ€ë¬¸ìë¡œ ë§ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.\n\n");
 				continue;
 			}
 		}
 		else {
-			printf("\n¿òÁ÷ÀÌ°í ½ÍÀº ¸»À» ¼±ÅÃÇÏ¼¼¿ä(X,Y,Z)");
+			printf("\nì›€ì§ì´ê³  ì‹¶ì€ ë§ì„ ì„ íƒí•˜ì„¸ìš”(X,Y,Z)");
 			scanf("%c", &horse);
 			if (!(horse == 'X' || horse == 'Y' || horse == 'Z')) {
-				printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. »ó°ü¾ø´Â ¹®ÀÚ¸¦ ÀÔ·ÂÇÏ¼Ì°Å³ª ¼Ò¹®ÀÚ¸¦ ÀÔ·ÂÇÏ¼Ì½À´Ï´Ù. ´ë¹®ÀÚ·Î ¸»À» ÀÔ·ÂÇØÁÖ¼¼¿ä.\n\n");
+				printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìƒê´€ì—†ëŠ” ë¬¸ìë¥¼ ì…ë ¥í•˜ì…¨ê±°ë‚˜ ì†Œë¬¸ìë¥¼ ì…ë ¥í•˜ì…¨ìŠµë‹ˆë‹¤. ëŒ€ë¬¸ìë¡œ ë§ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.\n\n");
 				continue;
 			}
 		}
@@ -351,24 +351,24 @@ void input_order(horse_ptr ptr) {
 	char str[30], * token;
 
 	getchar();
-	printf("¸»À» ¿òÁ÷ÀÌ°í ½ÍÀº ¼ø¼­¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.(¶ç¾î¾²±â·Î¸¸ ±¸ºĞÇØÁÖ¼¼¿ä. ex:À· µµ):");
+	printf("ë§ì„ ì›€ì§ì´ê³  ì‹¶ì€ ìˆœì„œë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.(ë„ì–´ì“°ê¸°ë¡œë§Œ êµ¬ë¶„í•´ì£¼ì„¸ìš”. ex:ìœ· ë„):");
 	gets(str);
 	token = strtok(str, " ");
 	while (token != NULL) {
-		if (!strcmp(token, "µµ"))
+		if (!strcmp(token, "ë„"))
 			moving_order[i] = DO;
-		else if (!strcmp(token, "°³"))
+		else if (!strcmp(token, "ê°œ"))
 			moving_order[i] = GAE;
-		else if (!strcmp(token, "°É"))
+		else if (!strcmp(token, "ê±¸"))
 			moving_order[i] = GUL;
-		else if (!strcmp(token, "À·"))
+		else if (!strcmp(token, "ìœ·"))
 			moving_order[i] = YUT;
-		else if (!strcmp(token, "¸ğ"))
+		else if (!strcmp(token, "ëª¨"))
 			moving_order[i] = MO;
-		else if (!strcmp(token, "¹éµµ"))
+		else if (!strcmp(token, "ë°±ë„"))
 			moving_order[i] = BACKDO;
 		else {
-			printf("\nÀß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù.\n");
+			printf("\nì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤.\n");
 			input_order(ptr);
 			exit(0);
 		}
@@ -377,17 +377,17 @@ void input_order(horse_ptr ptr) {
 	}
 	if (backdo_exist == 1 && moving_order[0] == BACKDO && ptr->location == &corner_node1) {
 		if (player_order == 1 && ((A.location == &corner_node1) && (B.location == &corner_node1) && (C.location == &corner_node1)) && moving_order[1] == 0) {
-			printf("Â÷·Ê¸¦ ³Ñ±é´Ï´Ù.\n");
+			printf("ì°¨ë¡€ë¥¼ ë„˜ê¹ë‹ˆë‹¤.\n");
 			throwing_record[0] = 0;
 			first_backdo++;
 		}
 		else if (player_order == 2 && ((X.location == &corner_node1) && (Y.location == &corner_node1) && (Z.location == &corner_node1)) && moving_order[1] == 0) {
-			printf("Â÷·Ê¸¦ ³Ñ±é´Ï´Ù.\n");
+			printf("ì°¨ë¡€ë¥¼ ë„˜ê¹ë‹ˆë‹¤.\n");
 			throwing_record[0] = 0;
 			first_backdo++;
 		}
 		else {
-			printf("\nÀß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. Ãâ¹ßÇÏÁö ¾ÊÀº ¸»À» ¹éµµ ½ÃÅ³ ¼ö´Â ¾ø½À´Ï´Ù.\n");
+			printf("\nì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ì¶œë°œí•˜ì§€ ì•Šì€ ë§ì„ ë°±ë„ ì‹œí‚¬ ìˆ˜ëŠ” ì—†ìŠµë‹ˆë‹¤.\n");
 			switch (choose_horse())
 			{
 			case 'A':
@@ -422,7 +422,7 @@ void move_horse(horse_ptr ptr) {
 	arrest = 0;
 
 	while (moving_order[i] != 0) {
-		//±âÁ¸ Ç¥±â »èÁ¦ÇÏ±â
+		//ê¸°ì¡´ í‘œê¸° ì‚­ì œí•˜ê¸°
 		if (ptr->location == &corner_node4)
 			strcpy(corner_node4.s, " O ");
 		else if (ptr->location == &corner_node2 || ptr->location == &corner_node3)
@@ -432,7 +432,7 @@ void move_horse(horse_ptr ptr) {
 		else if (ptr->location != &corner_node1)
 			strcpy(((common_ptr)ptr->location)->s, " O ");
 
-		//throwing_record °â»ç°â»ç Â÷·Ê·Î ÃÊ±âÈ­(ÇÑ²¨¹ø¿¡ ÃÊ±âÈ­ÇÏÁö ¾Ê´Â °Ç catch_enemy¿¡¼­ »ó´ëÆíÀ» Àâ°í À·À» ´Ù½Ã ´øÁ®µµ ¼öÇàÇÏ´Ù¸¸ ±âÁ¸ ´«À» ±â¾ïÇÏ±â À§ÇØ¼­)
+		//throwing_record ê²¸ì‚¬ê²¸ì‚¬ ì°¨ë¡€ë¡œ ì´ˆê¸°í™”(í•œêº¼ë²ˆì— ì´ˆê¸°í™”í•˜ì§€ ì•ŠëŠ” ê±´ catch_enemyì—ì„œ ìƒëŒ€í¸ì„ ì¡ê³  ìœ·ì„ ë‹¤ì‹œ ë˜ì ¸ë„ ìˆ˜í–‰í•˜ë‹¤ë§Œ ê¸°ì¡´ ëˆˆì„ ê¸°ì–µí•˜ê¸° ìœ„í•´ì„œ)
 		for (j = 0; j <= 9; j++) {
 			if (throwing_record[j] == moving_order[i]) {
 				throwing_record[j] = 0;
@@ -440,7 +440,7 @@ void move_horse(horse_ptr ptr) {
 			};
 		}
 
-		if (moving_order[i] != -1) {										//¹éµµ°¡ ¾Æ´Ò¶§
+		if (moving_order[i] != -1) {										//ë°±ë„ê°€ ì•„ë‹ë•Œ
 			for (j = 1; j <= moving_order[i]; j++) {
 				if ((ptr->location == &corner_node1) || (ptr->location == &corner_node4))
 					ptr->location = ((corner1_ptr)ptr->location)->rlink;
@@ -452,7 +452,7 @@ void move_horse(horse_ptr ptr) {
 					else
 						ptr->location = ((corner2_ptr)ptr->location)->rlink2;
 				}
-				else if (ptr->location == &middle_node) {						//¹éµµ°¡ ¾Æ´Ò¶§ ¹Ìµé³ëµåÀÌ¸é 1.ÄÚ³Ê2¿¡¼­¿Ô°íÁö±İ¹Ìµé³ëµå¿¡¼­¸·Ãâ¹ß 2.ÄÚ³Ê2¿¡¼­¿Ô°í¹Ìµé³ëµå´ÂÁß°£°úÁ¤ 3.ÄÚ³Ê3¿¡
+				else if (ptr->location == &middle_node) {						//ë°±ë„ê°€ ì•„ë‹ë•Œ ë¯¸ë“¤ë…¸ë“œì´ë©´ 1.ì½”ë„ˆ2ì—ì„œì™”ê³ ì§€ê¸ˆë¯¸ë“¤ë…¸ë“œì—ì„œë§‰ì¶œë°œ 2.ì½”ë„ˆ2ì—ì„œì™”ê³ ë¯¸ë“¤ë…¸ë“œëŠ”ì¤‘ê°„ê³¼ì • 3.ì½”ë„ˆ3ì—
 					if ((ptr->visitcorner3 == 0) && (j != 1))
 						ptr->location = middle_node.ldownlink;
 					else
@@ -467,23 +467,23 @@ void move_horse(horse_ptr ptr) {
 				}
 			}
 		}
-		else if (ptr->location == &corner_node4) {							//corner_node4¿¡¼­ÀÇ ¹éµµ
+		else if (ptr->location == &corner_node4) {							//corner_node4ì—ì„œì˜ ë°±ë„
 			if (ptr->visitcorner3)
 				ptr->location = corner_node4.llink1;
 			else
 				ptr->location = corner_node4.llink2;
 		}
-		else if (ptr->location == &middle_node) {										//°¡¿îµ¥ ³ëµå ¹éµµ
+		else if (ptr->location == &middle_node) {										//ê°€ìš´ë° ë…¸ë“œ ë°±ë„
 			if (ptr->visitcorner3)
 				ptr->location = middle_node.luplink;
 			else
 				ptr->location = middle_node.ruplink;
 		}
-		else if (ptr->location != &corner_node1) {										//ÀÏ¹İÀûÀÎ ¹éµµ
+		else if (ptr->location != &corner_node1) {										//ì¼ë°˜ì ì¸ ë°±ë„
 			if (ptr->location == &corner_node2) {
 				ptr->location = corner_node2.llink;
 			}
-			else if (ptr->location == &corner_node3) {									//È®·üÀº Èñ¹ÚÇÏÁö¸¸ ÄÚ³Ê3¿¡¼­ ÄÚ³Ê2±îÁö ¹éµµÇØ¼­ ¹Ìµé³ëµå·Î °¥ ¼öµµ ÀÖÀ¸´Ï±î
+			else if (ptr->location == &corner_node3) {									//í™•ë¥ ì€ í¬ë°•í•˜ì§€ë§Œ ì½”ë„ˆ3ì—ì„œ ì½”ë„ˆ2ê¹Œì§€ ë°±ë„í•´ì„œ ë¯¸ë“¤ë…¸ë“œë¡œ ê°ˆ ìˆ˜ë„ ìˆìœ¼ë‹ˆê¹Œ
 				ptr->visitcorner3 = 0;
 				ptr->location = corner_node3.llink;
 			}
@@ -496,11 +496,11 @@ void move_horse(horse_ptr ptr) {
 		}
 
 		catch_enemy(ptr);
-		synchronize(ptr);//carry_allyÇÏ±âÀü¿¡ ÇÑ ¹ø ´õ ÇØ¾ß 2°³Â¥¸®°¡ 1°³ µû¶óÀâÀ»¶§ µÚµû¶ó¿À´ø ÇÏ³ª°¡ ³«¿ÀµÇ´Â°ÍÀ» ¸·À» ¼ö ÀÖÀ½.
+		synchronize(ptr);//carry_allyí•˜ê¸°ì „ì— í•œ ë²ˆ ë” í•´ì•¼ 2ê°œì§œë¦¬ê°€ 1ê°œ ë”°ë¼ì¡ì„ë•Œ ë’¤ë”°ë¼ì˜¤ë˜ í•˜ë‚˜ê°€ ë‚™ì˜¤ë˜ëŠ”ê²ƒì„ ë§‰ì„ ìˆ˜ ìˆìŒ.
 		carry_ally(ptr);
 		synchronize(ptr);
 
-		//»õ·Î Ç¥±âÇÏ±â
+		//ìƒˆë¡œ í‘œê¸°í•˜ê¸°
 		if (ptr->location == &corner_node4)
 			strcpy(corner_node4.s, ptr->s);
 		else if (ptr->location == &corner_node2 || ptr->location == &corner_node3)
@@ -575,7 +575,7 @@ void initialize(horse_ptr ptr) {
 	ptr->location = &corner_node1;
 	ptr->visitcorner3 = 0;
 	ptr->carried = NULL;
-	if (player_order == 2) {		//Áö±İ ÅÏÀÎ ÇÃ·¹ÀÌ¾î°¡ »ó´ëÆíÀÓ.
+	if (player_order == 2) {		//ì§€ê¸ˆ í„´ì¸ í”Œë ˆì´ì–´ê°€ ìƒëŒ€í¸ì„.
 		if (ptr == &A)
 			strcpy(ptr->s, " A ");
 		else if (ptr == &B)
@@ -722,8 +722,8 @@ void synchronize(horse_ptr ptr) {
 void print_board() {
 	int i;
 	common_ptr ptr;
-	printf("          <À·³îÀÌ º¸µåÆÇ>\n----------------------------------\n");
-	//Ã¹ÁÙ ÀÎ¼â
+	printf("          <ìœ·ë†€ì´ ë³´ë“œíŒ>\n----------------------------------\n");
+	//ì²«ì¤„ ì¸ì‡„
 	printf("     %s", corner_node3.s);
 	ptr = corner_node3.llink;
 	for (i = 1; i <= 4; i++) {
@@ -732,33 +732,33 @@ void print_board() {
 			ptr = ptr->llink;
 	}
 	printf("-%s\n", corner_node2.s);
-	//µÑÂ°ÁÙ ÀÎ¼â
+	//ë‘˜ì§¸ì¤„ ì¸ì‡„
 	printf("\n     %s", corner_node3.rlink1->s);
 	printf("  %s   ", corner_node3.rlink2->s);
 	printf("    %s  ", corner_node2.rlink2->s);
 	printf("%s\n", corner_node2.llink->s);
-	//¼ÂÂ°ÁÙ ÀÎ¼â
+	//ì…‹ì§¸ì¤„ ì¸ì‡„
 	ptr = corner_node3.rlink1->rlink;
 	printf("\n     %s", ptr->s);
 	printf("    %s  ", middle_node.luplink->s);
 	printf(" %s    ", middle_node.ruplink->s);
 	ptr = corner_node2.llink->llink;
 	printf("%s\n", ptr->s);
-	//³İÂ°ÁÙ ÀÎ¼â
+	//ë„·ì§¸ì¤„ ì¸ì‡„
 	printf("\n               %s          \n", middle_node.s);
-	//´Ù¼¸Â°ÁÙ ÀÎ¼â
+	//ë‹¤ì„¯ì§¸ì¤„ ì¸ì‡„
 	ptr = corner_node4.llink1->llink;
 	printf("\n     %s", ptr->s);
 	printf("    %s  ", middle_node.ldownlink->s);
 	printf(" %s    ", middle_node.rdownlink->s);
 	ptr = corner_node1.rlink->rlink;
 	printf("%s\n", ptr->s);
-	//¿©¼¸Â°ÁÙ ÀÎ¼â
+	//ì—¬ì„¯ì§¸ì¤„ ì¸ì‡„
 	printf("\n     %s", corner_node4.llink1->s);
 	printf("  %s     ", corner_node4.llink2->s);
 	printf("  %s  ", corner_node1.llink2->s);
 	printf("%s\n", corner_node1.rlink->s);
-	//¸¶Áö¸·ÁÙ ÀÎ¼â
+	//ë§ˆì§€ë§‰ì¤„ ì¸ì‡„
 	printf("\n     %s", corner_node4.s);
 	ptr = corner_node4.rlink;
 	for (i = 1; i <= 4; i++) {
@@ -766,5 +766,5 @@ void print_board() {
 		if (i <= 3)
 			ptr = ptr->rlink;
 	}
-	printf("-%s\t<-Ãâ¹ßÁ¡ÀÌÀÚ °ñÀÎÁ¡\n----------------------------------\n\n", corner_node1.s);
+	printf("-%s\t<-ì¶œë°œì ì´ì ê³¨ì¸ì \n----------------------------------\n\n", corner_node1.s);
 };
